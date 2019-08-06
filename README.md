@@ -12,23 +12,21 @@ package main
 import (
 	"fmt"
 
-	"go-leboncoin/leboncoin"
+	"github.com/fallais/go-leboncoin/leboncoin"
 )
 
 func main() {
 	// Set HTTP Client
 	lbc := leboncoin.New()
 
-	price := leboncoin.Range{
-		Max: 3500,
-	}
-
+	// Create the search
 	search := leboncoin.NewSearch()
 	search.SetLimit(100)
 	search.SetCategory(leboncoin.MotorcycleCategory)
 	search.SetLocationWithDepartment("31")
 	search.SetKeywords("Honda CBF 600")
-	search.AddRange("price", price)
+	search.AddRange("price", map[string]int{"min": 1500, "max": 3000})
+	search.AddEnum(leboncoin.MotoBrandEnum, "honda")
 
 	// Search the ads
 	resp, err := lbc.Search(search)
@@ -37,8 +35,10 @@ func main() {
 	}
 
 	// Display the ads
+	fmt.Printf("%d ads have been found !\n", len(resp.Ads))
 	for _, ad := range resp.Ads {
-		fmt.Println(ad.Subject, ad.Price)
+		fmt.Printf("%s : %d€\n", ad.Subject, ad.Price[0])
 	}
 }
+
 ```

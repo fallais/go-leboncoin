@@ -22,11 +22,11 @@ type KeywordsFilter struct {
 
 // Filters holds the filters for the search.
 type Filters struct {
-	Category *CategoryFilter        `json:"category"`
-	Location map[string]interface{} `json:"location"`
-	Keywords *KeywordsFilter        `json:"keywords"`
-	Ranges   map[string]Range       `json:"ranges"`
-	Enums    map[string]Enum        `json:"enum"`
+	Category *CategoryFilter          `json:"category"`
+	Location map[string]interface{}   `json:"location"`
+	Keywords *KeywordsFilter          `json:"keywords"`
+	Ranges   map[Range]map[string]int `json:"ranges"`
+	Enums    map[Enum][]string        `json:"enums"`
 }
 
 // Search is used to search.
@@ -45,8 +45,8 @@ func NewSearch() *Search {
 		Category: nil,
 		Location: nil,
 		Keywords: nil,
-		Ranges:   make(map[string]Range),
-		Enums:    make(map[string]Enum),
+		Ranges:   make(map[Range]map[string]int),
+		Enums:    make(map[Enum][]string),
 	}
 
 	return &Search{
@@ -93,6 +93,14 @@ func (s *Search) SetLocationWithZipcodes(zipcodes []ZipCode) {
 }
 
 // AddRange adds a range filter.
-func (s *Search) AddRange(name string, r Range) {
-	s.Filters.Ranges[name] = r
+func (s *Search) AddRange(name Range, value map[string]int) {
+	s.Filters.Ranges[name] = value
+}
+
+// AddEnum adds an enumeration filter.
+func (s *Search) AddEnum(name Enum, value string) {
+	var enum []string
+	enum = append(enum, value)
+
+	s.Filters.Enums[name] = enum
 }

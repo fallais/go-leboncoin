@@ -1,10 +1,11 @@
 package leboncoin
 
-// Enum is a anumeration filter.
+// Enum is an enumeration filter.
 type Enum string
 
-// MotoType is the type of motorcycle.
-type MotoType Enum
-
-// MotoBrand is the brand of the moto.
-type MotoBrand Enum
+const (
+	// MotoTypeEnum is the enumeration for the type of motorcycle.
+	MotoTypeEnum Enum = "moto_type"
+	// MotoBrandEnum is the enumeration for the brand of the moto.
+	MotoBrandEnum Enum = "moto_brand"
+)

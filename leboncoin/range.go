@@ -1,19 +1,18 @@
 package leboncoin
 
-// Range is a range filter with a minimum and a maximum.
-type Range struct {
-	Min int `json:"min,omitempty"`
-	Max int `json:"max,omitempty"`
-}
+// Range is a range filter.
+type Range string
 
-// CubicCapacity is the cubic capacity of the motor.
-type CubicCapacity Range
+const (
+	// CubicCapacity is the cubic capacity of the motor.
+	CubicCapacity Range = "cubic_capacity"
 
-// Price is the price of the item.
-type Price Range
+	// Price is the price of the item.
+	Price Range = "price"
 
-// RegDate ...
-type RegDate Range
+	// RegDate is the year of building.
+	RegDate Range = "regdate"
 
-// MileAge is the amount of kilometers.
-type MileAge Range
+	// MileAge is the amount of kilometers.
+	MileAge Range = "mileage"
+)
