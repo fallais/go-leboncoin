@@ -16,7 +16,7 @@ import (
 )
 
 func main() {
-	// Set HTTP Client
+	// Create a new client
 	lbc := leboncoin.New()
 
 	// Create the search
