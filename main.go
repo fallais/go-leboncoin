@@ -31,5 +31,7 @@ func main() {
 
 	}
 
-	fmt.Println(resp.Total)
+	for _, ad := range resp.Ads {
+		fmt.Println(ad.Subject, ad.Price)
+	}
 }
