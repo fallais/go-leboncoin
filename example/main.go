@@ -16,7 +16,8 @@ func main() {
 	search.SetCategory(leboncoin.MotorcycleCategory)
 	search.SetLocationWithDepartment("31")
 	search.SetKeywords("Honda CBF 600")
-	search.AddRange("price", map[string]int{"min": 1500, "max": 3000})
+	search.AddRange(leboncoin.PriceRange, map[string]int{"min": 1500, "max": 3000})
+	search.AddRange(leboncoin.CubicCapacityRange, map[string]int{"min": 500})
 	search.AddEnum(leboncoin.MotoBrandEnum, "honda")
 
 	// Search the ads

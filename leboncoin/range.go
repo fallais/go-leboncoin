@@ -4,15 +4,15 @@ package leboncoin
 type Range string
 
 const (
-	// CubicCapacity is the cubic capacity of the motor.
-	CubicCapacity Range = "cubic_capacity"
+	// CubicCapacityRange is the cubic capacity of the motor.
+	CubicCapacityRange Range = "cubic_capacity"
 
-	// Price is the price of the item.
-	Price Range = "price"
+	// PriceRange is the price of the item.
+	PriceRange Range = "price"
 
-	// RegDate is the year of building.
-	RegDate Range = "regdate"
+	// RegDateRange is the year of building.
+	RegDateRange Range = "regdate"
 
-	// MileAge is the amount of kilometers.
-	MileAge Range = "mileage"
+	// MileAgeRange is the amount of kilometers.
+	MileAgeRange Range = "mileage"
 )
