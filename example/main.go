@@ -1,10 +1,3 @@
-# Go-LeBonCoin
-
-**go-leboncoin** is a Golang client for the **Le Bon Coin REST API**.
-
-## Usage
-
-```go
 package main
 
 import (
@@ -19,7 +12,7 @@ func main() {
 
 	search := leboncoin.NewSearch()
 	search.SetLimit(100)
-	search.SetCategory(leboncoin.Motorcycle)
+	search.SetCategory(leboncoin.MotorcycleCategory)
 	search.SetLocationWithDepartment("31")
 	search.SetKeywords("Honda CBF 600")
 
@@ -34,4 +27,3 @@ func main() {
 		fmt.Println(ad.Subject, ad.Price)
 	}
 }
-```

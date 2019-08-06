@@ -5,17 +5,12 @@ type Category int
 
 // Categories
 const (
-	Car Category = iota + 2
-	Motorcycle
-	Caravaning
-	CommercialVehicle
-	Trucks
+	CarCategory Category = iota + 2
+	MotorcycleCategory
+	CaravaningCategory
+	CommercialVehicleCategory
+	TrucksCategory
 )
-
-// String returns the category as a string.
-func (c Category) String() string {
-	return string(c)
-}
 
 // Name returns the name of category.
 func (c Category) Name() string {

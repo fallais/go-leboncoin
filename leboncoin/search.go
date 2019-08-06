@@ -1,15 +1,19 @@
 package leboncoin
 
+import (
+	"fmt"
+)
+
 //------------------------------------------------------------------------------
 // Structure
 //------------------------------------------------------------------------------
 
-type CategoryFilter struct {
-	ID string `json:"id"`
+type ZipCode struct {
+	ZipCode string `json:"zipcode"`
 }
 
-type LocationFilter struct {
-	Department string `json:"department"`
+type CategoryFilter struct {
+	ID string `json:"id"`
 }
 
 type KeywordsFilter struct {
@@ -18,11 +22,11 @@ type KeywordsFilter struct {
 
 // Filters holds the filters for the search.
 type Filters struct {
-	Category *CategoryFilter  `json:"category"`
-	Location *LocationFilter  `json:"location"`
-	Keywords *KeywordsFilter  `json:"keywords"`
-	Ranges   map[string]Range `json:"ranges"`
-	Enums    map[string]Enum  `json:"enum"`
+	Category *CategoryFilter        `json:"category"`
+	Location map[string]interface{} `json:"location"`
+	Keywords *KeywordsFilter        `json:"keywords"`
+	Ranges   map[string]Range       `json:"ranges"`
+	Enums    map[string]Enum        `json:"enum"`
 }
 
 // Search is used to search.
@@ -62,11 +66,28 @@ func (s *Search) SetLimit(limit int) {
 
 // SetCategory sets the category.
 func (s *Search) SetCategory(category Category) {
-	categoryFilter := &CategoryFilter{
-		ID: category.String(),
+	s.Filters.Category = &CategoryFilter{
+		ID: fmt.Sprint(category),
 	}
+}
 
-	filter
+// SetKeywords sets the keywords.
+func (s *Search) SetKeywords(keywords string) {
+	s.Filters.Keywords = &KeywordsFilter{
+		Text: keywords,
+	}
+}
 
-	s.CategoryFilter = categoryFilter
+// SetLocationWithDepartment sets the location with department number.
+func (s *Search) SetLocationWithDepartment(department string) {
+	location := make(map[string]interface{})
+	location["department"] = department
+	s.Filters.Location = location
+}
+
+// SetLocationWithZipcodes sets the location with zipcodes.
+func (s *Search) SetLocationWithZipcodes(zipcodes []ZipCode) {
+	location := make(map[string]interface{})
+	location["zipcodes"] = zipcodes
+	s.Filters.Location = location
 }
