@@ -45,8 +45,8 @@ func NewSearch() *Search {
 		Category: nil,
 		Location: nil,
 		Keywords: nil,
-		Ranges:   nil,
-		Enums:    nil,
+		Ranges:   make(map[string]Range),
+		Enums:    make(map[string]Enum),
 	}
 
 	return &Search{
@@ -90,4 +90,9 @@ func (s *Search) SetLocationWithZipcodes(zipcodes []ZipCode) {
 	location := make(map[string]interface{})
 	location["zipcodes"] = zipcodes
 	s.Filters.Location = location
+}
+
+// AddRange adds a range filter.
+func (s *Search) AddRange(name string, r Range) {
+	s.Filters.Ranges[name] = r
 }
