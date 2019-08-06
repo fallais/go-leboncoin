@@ -1,5 +1,7 @@
 # Go-LeBonCoin
 
+![Coop](https://github.com/fallais/go-leboncoin/blob/master/gopher.png)
+
 **go-leboncoin** is a Golang client for the **Le Bon Coin REST API**.
 
 ## Usage

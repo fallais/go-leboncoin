@@ -11,6 +11,7 @@ func main() {
 	lbc := leboncoin.New()
 
 	price := leboncoin.Range{
+		Min: 3000,
 		Max: 3500,
 	}
 
