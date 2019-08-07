@@ -37,14 +37,14 @@ type Filters struct {
 func Run(filename string) {
 	var filters Filters
 
-	// Read configuration file
+	// Read the file
 	file, err := ioutil.ReadFile(filename)
 	if err != nil {
 		logrus.Errorf("Error while reading the filters file : %s", err)
 		return
 	}
 
-	// Unmarshal
+	// Unmarshal the file
 	err = yaml.Unmarshal(file, &filters)
 	if err != nil {
 		logrus.Errorf("Error while unmarshalling the configuration : %s", err)
@@ -54,8 +54,12 @@ func Run(filename string) {
 	// Create a new client
 	lbc := leboncoin.New()
 
+	// Process the filters
 	for _, filter := range filters.Filters {
 		if !filter.IsEnabled {
+			logrus.WithFields(logrus.Fields{
+				"filter_name": filter.Name,
+			}).Infoln("Filter is not enabled")
 			continue
 		}
 
@@ -65,8 +69,20 @@ func Run(filename string) {
 
 		// Create the search
 		search := leboncoin.NewSearch()
+
+		// Set the limit
 		search.SetLimit(100)
-		search.SetCategory(filter.Category)
+
+		// Set the category
+		err := search.SetCategory(filter.Category)
+		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"filter_name": filter.Name,
+			}).WithError(err).Errorln("Error while setting the category")
+			continue
+		}
+
+		// Set the location
 		search.SetLocationWithDepartment(filter.Location)
 		search.SetKeywords(filter.Keywords)
 

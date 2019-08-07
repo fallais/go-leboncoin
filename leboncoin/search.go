@@ -68,10 +68,17 @@ func (s *Search) SetLimit(limit int) {
 }
 
 // SetCategory sets the category.
-func (s *Search) SetCategory(categoryID int) {
+func (s *Search) SetCategory(categoryID int) error {
+	_, ok := Categories[categoryID]
+	if !ok {
+		return fmt.Errorf("category does not exists")
+	}
+
 	s.Filters.Category = &CategoryFilter{
 		ID: fmt.Sprint(categoryID),
 	}
+
+	return nil
 }
 
 // SetKeywords sets the keywords.
