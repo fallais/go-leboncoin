@@ -16,6 +16,6 @@ filters:
     location: 31
     criterias:
       ranges:
-        price: 10-12
+        price: 4000-5000
       enums:
         brand: Ford

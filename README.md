@@ -6,7 +6,31 @@
 
 ## Why ?
 
-The aim is to create a bot that informs you of new ads based on your criterias.
+The aim is to create a bot that informs you of new ads based on your criterias. For example :
+
+```yaml
+filters:
+  - name: moto
+    is_enabled: true
+    category: 3
+    location: 31
+    keywords: Honda CBF 600
+    criterias:
+      ranges:
+        price: 1000-2500
+        cubic_capacity: 500-600
+      enums:
+        moto_brand: honda
+  - name: voiture
+    is_enabled: false
+    category: 2
+    location: 31
+    criterias:
+      ranges:
+        price: 4000-5000
+      enums:
+        brand: Ford
+```
 
 ## Usage
 
