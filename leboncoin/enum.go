@@ -1,4 +1,10 @@
 package leboncoin
 
-// Enums is the list of enums available for filtering.
-var Enums = []string{"moto_type", "moto_brand", "fuel", "gearbox", "brand"}
+// Enums is the list of enums with the possible values available for filtering.
+var Enums = map[string][]string{
+	"moto_type":  []string{"moto", "scooter", "quad"},
+	"moto_brand": []string{"aprilia", "bmw"},
+	"fuel":       []string{},
+	"gearbox":    []string{},
+	"brand":      []string{},
+}

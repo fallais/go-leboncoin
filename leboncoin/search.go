@@ -115,7 +115,8 @@ func (s *Search) AddRange(name string, value map[string]int) error {
 
 // AddEnum adds an enumeration filter.
 func (s *Search) AddEnum(name string, value string) error {
-	if !contains(Enums, name) {
+	_, ok := Enums[name]
+	if !ok {
 		return fmt.Errorf("enum does not exists")
 	}
 

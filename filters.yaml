@@ -9,7 +9,7 @@ filters:
         price: 1000-2500
         cubic_capacity: 500-600
       enums:
-        # moto_brand: honda
+        moto_type: moto
   - name: voiture
     is_enabled: false
     category: 2
