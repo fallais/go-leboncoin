@@ -120,28 +120,22 @@ func Run(filename string) {
 		}
 
 		// Search the ads
-		resp, err := lbc.Search(search)
+		ads, err := lbc.Search(search)
 		if err != nil {
 			logrus.Errorf("Error while searching ads : %s", err)
 			return
 		}
 
 		// Display the ads
-		logrus.Infof("%d ads have been found !", len(resp.Ads))
-		for _, ad := range resp.Ads {
-			if len(ad.Price) > 0 {
-				logrus.WithFields(logrus.Fields{
-					"price": ad.Price[0],
-				}).Infoln(ad.Subject)
-			} else {
-				logrus.Infof("%s : pas de prix\n", ad.Subject)
-			}
+		logrus.WithFields(logrus.Fields{
+			"filter_name": filter.Name,
+			"nb_ads":      len(ads),
+		}).Infof("New ads have been found !")
+		for _, ad := range ads {
+			logrus.WithFields(logrus.Fields{
+				"price":          ad.Price,
+				"published_date": ad.PublishedDate,
+			}).Infoln(ad.Name)
 		}
 	}
 }
-
-/* search.SetKeywords("Honda CBF 600")
-search.AddRange(leboncoin.PriceRange, map[string]int{"min": 4000, "max": 8000})
-search.AddRange(leboncoin.CubicCapacityRange, map[string]int{"min": 500})
-search.AddEnum(leboncoin.BrandEnum, "Ford")
-search.AddEnum(leboncoin.FuelEnum, "1") */

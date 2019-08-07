@@ -7,6 +7,9 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"time"
+
+	"go-leboncoin/models"
 )
 
 const baseURI = "https://api.leboncoin.fr/finder/search"
@@ -38,7 +41,7 @@ func New() *LeBonCoin {
 //------------------------------------------------------------------------------
 
 // Search ...
-func (lbc *LeBonCoin) Search(search *Search) (*Response, error) {
+func (lbc *LeBonCoin) Search(search *Search) ([]*models.Ad, error) {
 	// Prepare the URL
 	var reqURL *url.URL
 	reqURL, err := url.Parse(baseURI)
@@ -84,5 +87,28 @@ func (lbc *LeBonCoin) Search(search *Search) (*Response, error) {
 		return nil, fmt.Errorf("Error while unmarshalling the response : %s", err)
 	}
 
-	return response, nil
+	// Create the ads
+	var ads []*models.Ad
+	for _, lbcAd := range response.Ads {
+		// Parse the date
+		publishedDate, err := time.Parse("2006-01-02 15:04:05", lbcAd.FirstPublicationDate)
+		if err != nil {
+			fmt.Println("Error")
+			continue
+		}
+
+		// Sanitize the price
+		price := 0
+		if len(lbcAd.Price) > 0 {
+			price = lbcAd.Price[0]
+		}
+
+		// Create the model
+		ad := models.NewAd(lbcAd.Subject, lbcAd.Body, price, publishedDate)
+
+		// Append
+		ads = append(ads, ad)
+	}
+
+	return ads, nil
 }
