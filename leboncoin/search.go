@@ -103,14 +103,26 @@ func (s *Search) SetLocationWithZipcodes(zipcodes []ZipCode) {
 }
 
 // AddRange adds a range filter.
-func (s *Search) AddRange(name string, value map[string]int) {
+func (s *Search) AddRange(name string, value map[string]int) error {
+	if !contains(Ranges, name) {
+		return fmt.Errorf("range does not exists")
+	}
+
 	s.Filters.Ranges[name] = value
+
+	return nil
 }
 
 // AddEnum adds an enumeration filter.
-func (s *Search) AddEnum(name string, value string) {
+func (s *Search) AddEnum(name string, value string) error {
+	if !contains(Enums, name) {
+		return fmt.Errorf("enum does not exists")
+	}
+
 	var enum []string
 	enum = append(enum, value)
 
 	s.Filters.Enums[name] = enum
+
+	return nil
 }

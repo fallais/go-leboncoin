@@ -1,10 +1,7 @@
 package runner
 
 import (
-	//"fmt"
 	"io/ioutil"
-	"strconv"
-	"strings"
 
 	"go-leboncoin/leboncoin"
 
@@ -88,42 +85,39 @@ func Run(filename string) {
 
 		// Ranges
 		for k, v := range filter.Criterias.Ranges {
-			rangeMap := make(map[string]int)
-
-			// Explode the value
-			minAndMax := strings.Split(v, "-")
-
-			if len(minAndMax) != 2 {
-				return
-			}
-
-			// Min
-			if minAndMax[0] != "min" {
-				parsedMin, err := strconv.Atoi(minAndMax[0])
-				if err != nil {
-					return
-				}
-
-				rangeMap["min"] = parsedMin
-			}
-
-			// Min
-			if minAndMax[1] != "max" {
-				parsedMax, err := strconv.Atoi(minAndMax[1])
-				if err != nil {
-					return
-				}
-
-				rangeMap["max"] = parsedMax
+			// Parse the range
+			rangeMap, err := parseRange(v)
+			if err != nil {
+				logrus.WithFields(logrus.Fields{
+					"filter_name": filter.Name,
+					"range":       v,
+				}).WithError(err).Errorln("Error while parsing the range")
+				continue
 			}
 
 			// Add the range
-			search.AddRange(k, rangeMap)
+			err = search.AddRange(k, rangeMap)
+			if err != nil {
+				logrus.WithFields(logrus.Fields{
+					"filter_name": filter.Name,
+					"range_name":  k,
+				}).WithError(err).Errorln("Error while adding the range")
+				continue
+			}
 		}
 
 		// Enums
-		/* 		for _, enum := range filter.Criterias.Enums {
-		   		} */
+		for k, v := range filter.Criterias.Enums {
+			// Add the enus
+			err = search.AddEnum(k, v)
+			if err != nil {
+				logrus.WithFields(logrus.Fields{
+					"filter_name": filter.Name,
+					"enum_name":   k,
+				}).WithError(err).Errorln("Error while adding the enum")
+				continue
+			}
+		}
 
 		// Search the ads
 		resp, err := lbc.Search(search)

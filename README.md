@@ -60,7 +60,7 @@ func main() {
 	search.AddEnum("moto_brand", "honda")
 
 	// Search the ads
-	resp, _err_ := lbc.Search(search)
+	resp, _ := lbc.Search(search)
 
 	// Display the ads
 	fmt.Printf("%d ads have been found !\n", len(resp.Ads))

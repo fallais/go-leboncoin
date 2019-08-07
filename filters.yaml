@@ -3,13 +3,13 @@ filters:
     is_enabled: true
     category: 3
     location: 31
-    keywords: Honda CBF 600
+    # keywords: Honda CBF 600
     criterias:
       ranges:
         price: 1000-2500
         cubic_capacity: 500-600
       enums:
-        moto_brand: honda
+        # moto_brand: honda
   - name: voiture
     is_enabled: false
     category: 2
