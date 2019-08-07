@@ -8,25 +8,28 @@ import (
 // Structure
 //------------------------------------------------------------------------------
 
+// ZipCode ...
 type ZipCode struct {
 	ZipCode string `json:"zipcode"`
 }
 
+// CategoryFilter ...
 type CategoryFilter struct {
 	ID string `json:"id"`
 }
 
+// KeywordsFilter ...
 type KeywordsFilter struct {
 	Text string `json:"text"`
 }
 
 // Filters holds the filters for the search.
 type Filters struct {
-	Category *CategoryFilter          `json:"category"`
-	Location map[string]interface{}   `json:"location"`
-	Keywords *KeywordsFilter          `json:"keywords"`
-	Ranges   map[Range]map[string]int `json:"ranges"`
-	Enums    map[Enum][]string        `json:"enums"`
+	Category *CategoryFilter           `json:"category"`
+	Location map[string]interface{}    `json:"location"`
+	Keywords *KeywordsFilter           `json:"keywords"`
+	Ranges   map[string]map[string]int `json:"ranges"`
+	Enums    map[string][]string       `json:"enums"`
 }
 
 // Search is used to search.
@@ -45,8 +48,8 @@ func NewSearch() *Search {
 		Category: nil,
 		Location: nil,
 		Keywords: nil,
-		Ranges:   make(map[Range]map[string]int),
-		Enums:    make(map[Enum][]string),
+		Ranges:   make(map[string]map[string]int),
+		Enums:    make(map[string][]string),
 	}
 
 	return &Search{
@@ -65,9 +68,9 @@ func (s *Search) SetLimit(limit int) {
 }
 
 // SetCategory sets the category.
-func (s *Search) SetCategory(category Category) {
+func (s *Search) SetCategory(categoryID int) {
 	s.Filters.Category = &CategoryFilter{
-		ID: fmt.Sprint(category),
+		ID: fmt.Sprint(categoryID),
 	}
 }
 
@@ -79,9 +82,9 @@ func (s *Search) SetKeywords(keywords string) {
 }
 
 // SetLocationWithDepartment sets the location with department number.
-func (s *Search) SetLocationWithDepartment(department string) {
+func (s *Search) SetLocationWithDepartment(department int) {
 	location := make(map[string]interface{})
-	location["department"] = department
+	location["department"] = fmt.Sprint(department)
 	s.Filters.Location = location
 }
 
@@ -93,12 +96,12 @@ func (s *Search) SetLocationWithZipcodes(zipcodes []ZipCode) {
 }
 
 // AddRange adds a range filter.
-func (s *Search) AddRange(name Range, value map[string]int) {
+func (s *Search) AddRange(name string, value map[string]int) {
 	s.Filters.Ranges[name] = value
 }
 
 // AddEnum adds an enumeration filter.
-func (s *Search) AddEnum(name Enum, value string) {
+func (s *Search) AddEnum(name string, value string) {
 	var enum []string
 	enum = append(enum, value)
 

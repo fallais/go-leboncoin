@@ -4,6 +4,10 @@
 
 **go-leboncoin** is a Golang client for the **Le Bon Coin REST API**.
 
+## Why ?
+
+The aim is to create a bot that informs you of new ads based on your criterias.
+
 ## Usage
 
 ```go
