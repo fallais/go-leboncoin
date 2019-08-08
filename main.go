@@ -10,7 +10,7 @@ import (
 
 var (
 	logging     = flag.String("logging", "info", "Logging level")
-	filtersFile = flag.String("filters_file", "filters.yaml", "Configuration")
+	filtersFile = flag.String("filters_file", "filters.yaml", "Filters")
 )
 
 func init() {

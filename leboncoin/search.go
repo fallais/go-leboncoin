@@ -2,6 +2,8 @@ package leboncoin
 
 import (
 	"fmt"
+	"net/url"
+	"strconv"
 )
 
 //------------------------------------------------------------------------------
@@ -56,6 +58,63 @@ func NewSearch() *Search {
 		Limit:   100,
 		Filters: filter,
 	}
+}
+
+// NewSearchFromURL returns a new Search from the given URL.
+func NewSearchFromURL(u string) (*Search, error) {
+	// Prepare the URL
+	parsedURL, err := url.Parse(u)
+	if err != nil {
+		return nil, fmt.Errorf("Error while parsing the URL : %s", err)
+	}
+
+	// Parse the parameters
+	params, err := url.ParseQuery(parsedURL.RawQuery)
+	if err != nil {
+		return nil, fmt.Errorf("Error while parsing the parameters : %s", err)
+	}
+
+	// Create the search
+	search := NewSearch()
+
+	// Set the limit
+	search.SetLimit(100)
+
+	// Process the parameters
+	for k, v := range params {
+		switch k {
+		case "category":
+			// Parse the string to int
+			i, err := strconv.Atoi(v[0])
+			if err != nil {
+				return nil, fmt.Errorf("Error while parsing the category : %s", err)
+			}
+
+			// Set the category
+			search.SetCategory(i)
+			break
+		case "locations":
+			//
+			break
+		default:
+			// Check in Enums
+			_, ok := Enums[k]
+			if ok {
+				//
+
+				continue
+			}
+
+			// Check in Range
+			if contains(Ranges, k) {
+				//
+
+				continue
+			}
+		}
+	}
+
+	return search, nil
 }
 
 //------------------------------------------------------------------------------
