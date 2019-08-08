@@ -64,26 +64,17 @@ func Run(filename string) {
 			"filter_name": filter.Name,
 		}).Infoln("Searching ads")
 
-		// Create the search
-		search := leboncoin.NewSearch()
-
-		// Set the limit
-		search.SetLimit(100)
-
-		// Set the category
-		err := search.SetCategory(filter.Category)
-		if err != nil {
-			logrus.WithFields(logrus.Fields{
-				"filter_name": filter.Name,
-			}).WithError(err).Errorln("Error while setting the category")
-			continue
+		// Create the location
+		location := leboncoin.Location{
+			Type:       "department",
+			Department: 31,
 		}
 
-		// Set the location
-		search.SetLocationWithDepartment(filter.Location)
-		search.SetKeywords(filter.Keywords)
+		// Create the filters
+		filters := &leboncoin.Filters{}
 
 		// Ranges
+		ranges := make(map[string]map[string]int)
 		for k, v := range filter.Criterias.Ranges {
 			// Parse the range
 			rangeMap, err := parseRange(v)
@@ -96,46 +87,37 @@ func Run(filename string) {
 			}
 
 			// Add the range
-			err = search.AddRange(k, rangeMap)
-			if err != nil {
-				logrus.WithFields(logrus.Fields{
-					"filter_name": filter.Name,
-					"range_name":  k,
-				}).WithError(err).Errorln("Error while adding the range")
-				continue
-			}
+			ranges[k] = rangeMap
 		}
+		filters.Ranges = ranges
 
 		// Enums
+		enums := make(map[string][]string)
 		for k, v := range filter.Criterias.Enums {
-			// Add the enus
-			err = search.AddEnum(k, v)
-			if err != nil {
-				logrus.WithFields(logrus.Fields{
-					"filter_name": filter.Name,
-					"enum_name":   k,
-				}).WithError(err).Errorln("Error while adding the enum")
-				continue
-			}
+			// Add the enums
+			enums[k] = []string{v}
+		}
+		filters.Enums = enums
+
+		// Create the search
+		search, err := leboncoin.NewSearch(filter.Category, filter.Keywords, location, filters)
+		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"filter_name": filter.Name,
+			}).WithError(err).Errorln("Error while creating the search")
+			continue
 		}
 
 		// Search the ads
-		ads, err := lbc.Search(search)
+		response, err := lbc.Search(search)
 		if err != nil {
 			logrus.Errorf("Error while searching ads : %s", err)
 			return
 		}
 
-		// Display the ads
 		logrus.WithFields(logrus.Fields{
 			"filter_name": filter.Name,
-			"nb_ads":      len(ads),
+			"nb_ads":      len(response.Ads),
 		}).Infof("New ads have been found !")
-		for _, ad := range ads {
-			logrus.WithFields(logrus.Fields{
-				"price":          ad.Price,
-				"published_date": ad.PublishedDate,
-			}).Infoln(ad.Name)
-		}
 	}
 }

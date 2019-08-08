@@ -1,7 +1,7 @@
 filters:
   - name: moto
     type: url
-    is_enabled: true
+    is_enabled: false
     settings:
       url: https://www.leboncoin.fr/recherche/?category=3&locations=d_31&moto_type=moto&price=1000-2500&cubic_capacity=500-600
   - name: moto

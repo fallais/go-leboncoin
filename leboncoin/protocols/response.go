@@ -1,4 +1,4 @@
-package leboncoin
+package protocols
 
 type Response struct {
 	Total         int    `json:"total"`

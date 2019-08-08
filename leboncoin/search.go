@@ -3,61 +3,58 @@ package leboncoin
 import (
 	"fmt"
 	"net/url"
+	"regexp"
 	"strconv"
+	"strings"
 )
 
 //------------------------------------------------------------------------------
 // Structure
 //------------------------------------------------------------------------------
 
-// ZipCode ...
-type ZipCode struct {
-	ZipCode string `json:"zipcode"`
-}
-
-// CategoryFilter ...
-type CategoryFilter struct {
-	ID string `json:"id"`
-}
-
-// KeywordsFilter ...
-type KeywordsFilter struct {
-	Text string `json:"text"`
-}
-
-// Filters holds the filters for the search.
+// Filters are the filters of the search.
 type Filters struct {
-	Category *CategoryFilter           `json:"category"`
-	Location map[string]interface{}    `json:"location"`
-	Keywords *KeywordsFilter           `json:"keywords"`
-	Ranges   map[string]map[string]int `json:"ranges"`
-	Enums    map[string][]string       `json:"enums"`
+	Ranges map[string]map[string]int
+	Enums  map[string][]string
 }
 
-// Search is used to search.
+// Location is the location for the search.
+type Location struct {
+	Type       string
+	ZipCodes   []int
+	Department int
+	Region     int
+	Area       string
+}
+
+// Search is the searching structure.
 type Search struct {
-	Limit   int      `json:"limit"`
-	Filters *Filters `json:"filters"`
+	categoryID int
+	keywords   string
+	location   Location
+	filters    *Filters
 }
 
 //------------------------------------------------------------------------------
 // Factory
 //------------------------------------------------------------------------------
 
-// NewSearch returns a new Search
-func NewSearch() *Search {
-	filter := &Filters{
-		Category: nil,
-		Location: nil,
-		Keywords: nil,
-		Ranges:   make(map[string]map[string]int),
-		Enums:    make(map[string][]string),
+// NewSearch returns a new Search.
+func NewSearch(categoryID int, keywords string, location Location, filters *Filters) (*Search, error) {
+	// Check the category
+	_, ok := Categories[categoryID]
+	if !ok {
+		return nil, fmt.Errorf("category does not exists")
 	}
 
-	return &Search{
-		Limit:   100,
-		Filters: filter,
+	search := &Search{
+		categoryID: categoryID,
+		keywords:   keywords,
+		location:   location,
+		filters:    filters,
 	}
+
+	return search, nil
 }
 
 // NewSearchFromURL returns a new Search from the given URL.
@@ -74,115 +71,83 @@ func NewSearchFromURL(u string) (*Search, error) {
 		return nil, fmt.Errorf("Error while parsing the parameters : %s", err)
 	}
 
+	// Check the category (required)
+	categoryStr, ok := params["category"]
+	if !ok {
+		return nil, fmt.Errorf("category is not the parameters")
+	}
+	if len(categoryStr) <= 0 {
+		return nil, fmt.Errorf("category must not be empty")
+	}
+	// Parse the category
+	category, err := strconv.Atoi(categoryStr[0])
+	if err != nil {
+		return nil, fmt.Errorf("Error while parsing the category : %s", err)
+	}
+
+	// Check the keywords (not required)
+	keywords := ""
+	if len(params["text"]) > 0 || len(strings.TrimSpace(params["text"][0])) > 0 {
+		keywords = params["text"][0]
+	}
+
+	// Location
+	location := Location{
+		Type:       "department",
+		Department: 31,
+	}
+
 	// Create the search
-	search := NewSearch()
-
-	// Set the limit
-	search.SetLimit(100)
-
-	// Process the parameters
-	for k, v := range params {
-		switch k {
-		case "category":
-			// Parse the string to int
-			i, err := strconv.Atoi(v[0])
-			if err != nil {
-				return nil, fmt.Errorf("Error while parsing the category : %s", err)
-			}
-
-			// Set the category
-			search.SetCategory(i)
-			break
-		case "locations":
-			//
-			break
-		default:
-			// Check in Enums
-			_, ok := Enums[k]
-			if ok {
-				//
-
-				continue
-			}
-
-			// Check in Range
-			if contains(Ranges, k) {
-				//
-
-				continue
-			}
-		}
+	search, err := NewSearch(category, keywords, location, nil)
+	if err != nil {
+		return nil, fmt.Errorf("Error while creating the search : %s", err)
 	}
 
 	return search, nil
 }
 
 //------------------------------------------------------------------------------
-// Factory
+// Helpers
 //------------------------------------------------------------------------------
 
-// SetLimit sets the limit.
-func (s *Search) SetLimit(limit int) {
-	s.Limit = limit
-}
+func parseLocation(l string) (*Location, error) {
+	var location *Location
 
-// SetCategory sets the category.
-func (s *Search) SetCategory(categoryID int) error {
-	_, ok := Categories[categoryID]
-	if !ok {
-		return fmt.Errorf("category does not exists")
+	// Region
+	r, err := regexp.Compile("r_(\\d{2})")
+	if err != nil {
+		return nil, fmt.Errorf("Error while compiling the regex : %s", err)
+	}
+	if r.MatchString(l) {
+		reg := r.FindString(l)
+
+		// Parse the string to int
+		i, err := strconv.Atoi(reg)
+		if err != nil {
+			return nil, fmt.Errorf("Error while converting the region : %s", err)
+		}
+
+		location.Type = "region"
+		location.Region = i
 	}
 
-	s.Filters.Category = &CategoryFilter{
-		ID: fmt.Sprint(categoryID),
+	// Departement
+	r, err = regexp.Compile("d_(\\d{2})")
+	if err != nil {
+		return nil, fmt.Errorf("Error while compiling the regex : %s", err)
+	}
+	if r.MatchString(l) {
+		dep := r.FindString(l)
+
+		// Parse the string to int
+		i, err := strconv.Atoi(dep)
+		if err != nil {
+			return nil, fmt.Errorf("Error while converting the department : %s", err)
+		}
+
+		location.Type = "department"
+		location.Department = i
 	}
 
-	return nil
-}
-
-// SetKeywords sets the keywords.
-func (s *Search) SetKeywords(keywords string) {
-	s.Filters.Keywords = &KeywordsFilter{
-		Text: keywords,
-	}
-}
-
-// SetLocationWithDepartment sets the location with department number.
-func (s *Search) SetLocationWithDepartment(department int) {
-	location := make(map[string]interface{})
-	location["department"] = fmt.Sprint(department)
-	s.Filters.Location = location
-}
-
-// SetLocationWithZipcodes sets the location with zipcodes.
-func (s *Search) SetLocationWithZipcodes(zipcodes []ZipCode) {
-	location := make(map[string]interface{})
-	location["zipcodes"] = zipcodes
-	s.Filters.Location = location
-}
-
-// AddRange adds a range filter.
-func (s *Search) AddRange(name string, value map[string]int) error {
-	if !contains(Ranges, name) {
-		return fmt.Errorf("range does not exists")
-	}
-
-	s.Filters.Ranges[name] = value
-
-	return nil
-}
-
-// AddEnum adds an enumeration filter.
-func (s *Search) AddEnum(name string, value string) error {
-	_, ok := Enums[name]
-	if !ok {
-		return fmt.Errorf("enum does not exists")
-	}
-
-	var enum []string
-	enum = append(enum, value)
-
-	s.Filters.Enums[name] = enum
-
-	return nil
+	return location, nil
 }
