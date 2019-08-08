@@ -16,3 +16,9 @@ var Categories = map[int]string{
 	12: "locations_gites",
 	13: "bureaux_commerces",
 }
+
+// categoryExists returns `true` if the category exists and `false` if not.
+func categoryExists(c int) bool {
+	_, ok := Categories[c]
+	return ok
+}

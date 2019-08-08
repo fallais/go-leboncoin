@@ -91,8 +91,15 @@ func (lbc *LeBonCoin) Search(search *Search) (*protocols.Response, error) {
 	return response, nil
 }
 
+//------------------------------------------------------------------------------
+// Helpers
+//------------------------------------------------------------------------------
+
 func requestFromSearch(s *Search) *protocols.Request {
 	request := &protocols.Request{}
+
+	location := make(map[string]interface{})
+	location["department"] = fmt.Sprint(s.location.department)
 
 	request.Limit = 100
 	request.Filters = &protocols.Filters{
@@ -102,6 +109,12 @@ func requestFromSearch(s *Search) *protocols.Request {
 		Keywords: &protocols.KeywordsFilter{
 			Text: s.keywords,
 		},
+		Location: location,
+	}
+
+	if s.filters != nil {
+		request.Filters.Ranges = s.filters.Ranges
+		request.Filters.Enums = s.filters.Enums
 	}
 
 	return request
