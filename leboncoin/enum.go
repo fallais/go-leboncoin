@@ -8,4 +8,9 @@ var Enums = map[string][]string{
 	"gearbox":          []string{},
 	"brand":            []string{},
 	"real_estate_type": []string{},
+	"clothing_type":    []string{"1", "2"},
+	"clothing_st":      []string{"4"},
+	"clothing_tag":     []string{"robe"},
+	"clothing_brand_a": []string{"abercrombiefitch"},
+	"clothing_color_a": []string{"noir"},
 }

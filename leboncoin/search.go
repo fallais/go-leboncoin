@@ -75,10 +75,7 @@ func NewSearchFromURL(u string) (*Search, error) {
 	}
 
 	// Check the keywords (not required)
-	keywords := ""
-	if len(params["text"]) > 0 && len(strings.TrimSpace(params["text"][0])) > 0 {
-		keywords = params["text"][0]
-	}
+	keywords := parseKeywords(params)
 
 	// Location
 	location := NewDepartmentLocation(31)
@@ -131,6 +128,15 @@ func parseCategory(params url.Values) (int, error) {
 	}
 
 	return category, nil
+}
+
+// parseKeywords parses the keywords from URL parameter.
+func parseKeywords(params url.Values) string {
+	if len(params["text"]) > 0 && len(strings.TrimSpace(params["text"][0])) > 0 {
+		return params["text"][0]
+	}
+
+	return ""
 }
 
 // parseRanges parses the ranges from URL parameter.
