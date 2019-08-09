@@ -2,13 +2,11 @@
 
 ![Coop](https://github.com/fallais/go-leboncoin/blob/master/gopher.png)
 
-**go-leboncoin** is a Golang client for the **Le Bon Coin REST API**.
+**go-leboncoin** is a tool that is able to search ads in **Le Bon Coin** and informs you of new ads. The development is in **progress**
 
-**DISCLAIMER** : This is currently in **beta**, I mean the development is in progress. It is not yet released.
+## Filters
 
-## Aim
-
-The aim is to create a bot that informs you of new ads with the given URL. For example :
+The idea is to create filters based on the URL that is built when you search on *Le Bon Coin*. The filter has a `name`, a `is_enabled` boolean, and the URL.
 
 ```yaml
 filters:
@@ -16,6 +14,15 @@ filters:
     is_enabled: true
     url: https://www.leboncoin.fr/recherche/?category=3&locations=d_31&moto_type=moto&price=1000-2500&cubic_capacity=500-600
 ```
+
+## Notifications
+
+TODO :
+
+- Emails notification
+- SMS notification
+- IFTTT
+- ...
 
 ## Contributing
 
