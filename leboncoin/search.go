@@ -12,6 +12,9 @@ import (
 // ErrCategoryNotExists is raised when the category does not exist.
 var ErrCategoryNotExists = errors.New("category does not exist")
 
+// ErrCategoryEmpty is raised when the category is empty.
+var ErrCategoryEmpty = errors.New("category must not be empty")
+
 // ErrDepartmentFormatIncorrect is raised when department format is incorrect.
 var ErrDepartmentFormatIncorrect = errors.New("format of department is incorrect")
 
@@ -115,7 +118,7 @@ func parseCategory(params url.Values) (int, error) {
 	// Check the category (required)
 	categoryStr, ok := params["category"]
 	if !ok || len(categoryStr) != 1 {
-		return 0, fmt.Errorf("category must not be empty")
+		return 0, ErrCategoryEmpty
 	}
 	// Parse the category
 	category, err := strconv.Atoi(categoryStr[0])

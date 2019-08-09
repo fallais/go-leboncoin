@@ -45,12 +45,10 @@ func NewRegionLocation(region int) Location {
 func (l *Location) String() string {
 	switch l.t {
 	case "department":
-		return fmt.Sprintf("%s: %d", l.t, l.department)
+		return fmt.Sprintf("department: %d", l.department)
 	case "region":
-		return fmt.Sprintf("%s: %d", l.t, l.region)
+		return fmt.Sprintf("region: %d", l.region)
 	default:
 		return "unknown"
 	}
-
-	return "unknown"
 }
