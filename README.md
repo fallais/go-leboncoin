@@ -2,7 +2,7 @@
 
 ![Coop](https://github.com/fallais/go-leboncoin/blob/master/gopher.png)
 
-**go-leboncoin** is a tool that is able to search ads in **Le Bon Coin** and informs you of new ads. The development is in **progress**
+**go-leboncoin** is a tool that is able to search ads in **Le Bon Coin** and informs you of new ads. The development is in **progress**, is not ready for production !
 
 ## Filters
 
